@@ -1,0 +1,6 @@
+{
+  "name": "The Art of Narrative Writing",
+  "description": "An interactive AS Level English lesson on crafting compelling stories and mastering narrative techniques.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
