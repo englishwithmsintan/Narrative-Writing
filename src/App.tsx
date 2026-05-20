@@ -290,6 +290,25 @@ const ReadingSlide = () => {
   const [heartRate, setHeartRate] = useState(65);
   const [audioOn, setAudioOn] = useState(false);
   const audioCtxRef = useRef<AudioContext | null>(null);
+  const [partnerTimer, setPartnerTimer] = useState<number | null>(null);
+  const [timerActive, setTimerActive] = useState(false);
+
+  useEffect(() => {
+    let interval: any = null;
+    if (timerActive && partnerTimer !== null && partnerTimer > 0) {
+      interval = setInterval(() => {
+        setPartnerTimer(p => (p !== null && p > 0 ? p - 1 : 0));
+      }, 1000);
+    } else if (partnerTimer === 0) {
+      setTimerActive(false);
+    }
+    return () => clearInterval(interval);
+  }, [timerActive, partnerTimer]);
+
+  const startPartnerTimer = () => {
+    setPartnerTimer(30);
+    setTimerActive(true);
+  };
 
   const moods = [
     { name: "Dread", color: "bg-red-500/20 text-red-400 border-red-500/30", rate: 115, analysis: "The relentless rhythm of nervous confessions coupled with auditory hallucinations makes the reader expect an impending disaster." },
@@ -517,12 +536,24 @@ const ReadingSlide = () => {
             </AnimatePresence>
           </div>
 
-          <div className="mt-2 bg-[#ee4d6a] text-[#0f111a] p-5 font-bold rounded-sm flex items-center gap-3">
-            <MessageSquare size={20} className="shrink-0" />
-            <p className="text-xs tracking-wider uppercase">
-              <span className="underline">Turn to a partner:</span> Share ONE word that describes how this feels to you.
-            </p>
-          </div>
+          <button
+            type="button"
+            onClick={timerActive ? () => setTimerActive(false) : startPartnerTimer}
+            className="mt-2 w-full bg-[#ee4d6a] hover:bg-rose-600 text-[#0f111a] p-4 md:p-5 font-bold rounded-sm flex items-center justify-between transition-all duration-300 shadow-[0_4px_20px_rgba(238,77,106,0.25)] select-none text-left cursor-pointer active:scale-[0.98] border border-transparent"
+          >
+            <div className="flex items-center gap-3">
+              <MessageSquare size={20} className="shrink-0" />
+              <div>
+                <p className="text-[10px] uppercase tracking-widest text-[#0f111a]/70 font-mono font-bold leading-tight">STAGE 1 INTERACTIVE TASK</p>
+                <p className="text-xs md:text-sm font-black tracking-wide uppercase text-[#0f111a]">
+                  Turn to a partner: Share ONE word that describes how this feels. (30s Task)
+                </p>
+              </div>
+            </div>
+            <div className="bg-[#0f111a] text-white px-3 py-1 font-mono text-xs font-bold rounded min-w-[80px] text-center border border-white/10 shrink-0">
+              {partnerTimer !== null && partnerTimer >= 0 ? `${partnerTimer}s` : "START"}
+            </div>
+          </button>
         </div>
       </div>
     </div>
@@ -559,17 +590,17 @@ const BigQuestionSlide = () => {
           </div>
           
           <div className="space-y-3 pt-6 border-t border-white/5 text-slate-400 font-sans text-sm">
-            <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-slate-600" />
-              <span>The plot and sequence of events</span>
+            <div className="flex items-start gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-slate-600 mt-1.5 shrink-0" />
+              <span><strong>The Story & Events:</strong> What literally happens in the plot.</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-slate-600" />
-              <span>The explicit character traits</span>
+            <div className="flex items-start gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-slate-600 mt-1.5 shrink-0" />
+              <span><strong>In this text:</strong> A narrator claims he is not mad, but tells us how he murdered an old man because of his pale blue eye.</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-slate-600" />
-              <span>Literary context / what's written</span>
+            <div className="flex items-start gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-slate-600 mt-1.5 shrink-0" />
+              <span><strong>The Surface Narrative:</strong> The simple, sequential layer of character and plot.</span>
             </div>
           </div>
         </motion.div>
@@ -603,17 +634,17 @@ const BigQuestionSlide = () => {
           </div>
           
           <div className="space-y-3 pt-6 border-t border-[#ee4d6a]/20 text-slate-200 font-sans text-sm">
-            <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-[#ee4d6a]" />
-              <span className="font-bold text-slate-100">Specific language choices and vocabulary</span>
+            <div className="flex items-start gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#ee4d6a] mt-1.5 shrink-0" />
+              <span><strong>The Craft:</strong> HOW does Poe make us feel the narrator's unravelling panic?</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-[#ee4d6a]" />
-              <span className="font-bold text-slate-100">Structural patterns and layout effects</span>
+            <div className="flex items-start gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#ee4d6a] mt-1.5 shrink-0" />
+              <span><strong>The Emotion:</strong> HOW does space and structure construct a creeping, biological sense of dread?</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-[#ee4d6a]" />
-              <span className="font-bold text-slate-100">The deliberate psychological effect on YOU</span>
+            <div className="flex items-start gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#ee4d6a] mt-1.5 shrink-0" />
+              <span><strong>Syllabus Critical:</strong> Explaining HOW the writer chose and built the text block (Repetition & Sentence Structure).</span>
             </div>
           </div>
         </motion.div>
@@ -631,25 +662,26 @@ const BigQuestionSlide = () => {
 
 const TechniqueRepetition = () => {
   const [activeStep, setActiveStep] = useState<number>(0);
+  const [revealMindset, setRevealMindset] = useState(false);
 
   const steps = [
     {
-      title: 'Step 1: "nervous"',
-      highlight: '"nervous"',
-      stat: "The Baseline State",
-      analysis: "Poe begins directly with the key emotion. Rather than building up, we start already at the peak of nervous agitation."
+      title: 'Step 1: "very"',
+      highlight: '"very"',
+      stat: "The Unusual Intensifier",
+      analysis: "Poe writes 'very.' This is already an unusual choice to qualify a basic nervous state, showing a heightened level of emotional focus."
     },
     {
       title: 'Step 2: "very, very"',
       highlight: '"very, very"',
-      stat: "The Redoubled Obsession",
-      analysis: "Repeating the intensifier creates an immediate stammering, erratic rhythm. The voice of a narrator who is trying and failing to compose themselves."
+      stat: "The Uncontrolled Doubling",
+      analysis: "He doubles it: 'very, very.' The narrator cannot stop themselves. This repetition creates an immediate stammering, erratic rhythm of speech."
     },
     {
       title: 'Step 3: "dreadfully"',
       highlight: '"dreadfully nervous"',
-      stat: "The Psychological Abyss",
-      analysis: "Escalates beyond descriptive adjectives to an acute terror. Placing 'nervous' twice frames the obsession cleanly, highlighting complete horror."
+      stat: "The Physical Abyss",
+      analysis: "He adds 'dreadfully' to 'nervous'. By the end of this phrase, we feel the narrator physically losing control even as they desperately try to appear calm."
     }
   ];
 
@@ -672,8 +704,8 @@ const TechniqueRepetition = () => {
         
         <p className="text-3xl md:text-5xl lg:text-6xl font-serif italic leading-relaxed text-slate-100">
           “<span className={cn("transition-all duration-300", activeStep === 0 ? "text-[#f1a92a]" : "text-white/40")}>nervous</span> —{' '}
-          <span className={cn("transition-all duration-300 font-bold", activeStep === 1 ? "text-[#ee4d6a] underline" : "text-white/40")}>very, very</span>{' '}
-          <span className={cn("transition-all duration-300 italic underline decoration-[#ee4d6a]", activeStep === 2 ? "text-[#ee4d6a]" : "text-white/40")}>dreadfully nervous</span>”
+          <span className={cn("transition-all duration-300 font-bold", activeStep === 1 || activeStep === 0 ? "text-[#ee4d6a] underline" : "text-white/40")}>very, very</span>{' '}
+          <span className={cn("transition-all duration-300 italic underline decoration-[#ee4d6a]", activeStep === 2 ? "text-amber-400" : "text-white/40")}>dreadfully nervous</span>”
         </p>
       </div>
 
@@ -699,15 +731,30 @@ const TechniqueRepetition = () => {
         ))}
       </div>
 
-      <div className="bg-[#131525]/50 border border-white/5 p-6 rounded-sm flex items-center justify-between">
+      <div className="bg-[#131525]/50 border border-white/5 p-6 rounded-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <Bookmark className="text-[#ee4d6a]" />
+          <Bookmark className="text-[#ee4d6a] shrink-0" />
           <p className="text-sm font-serif italic text-slate-300">
-            "What does this incremental structure tell us about the narrator’s underlying state of mind?"
+            "What does all this repetition tell us about the narrator’s state of mind?"
           </p>
         </div>
-        <div className="px-5 py-2.5 bg-white/5 border border-white/15 text-[10px] font-mono tracking-widest uppercase text-slate-400">
-          State of panic: Active
+        <div className="flex items-center gap-3">
+          {revealMindset && (
+            <motion.p 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="text-xs text-rose-300 italic font-serif"
+            >
+              "They're not calm at all. The repetition reveals the panic underneath the performance."
+            </motion.p>
+          )}
+          <button
+            type="button"
+            onClick={() => setRevealMindset(!revealMindset)}
+            className="px-5 py-2.5 bg-[#ee4d6a] text-[#0f111a] hover:bg-rose-600 transition-all text-[10px] font-mono tracking-widest uppercase font-bold cursor-pointer rounded-sm"
+          >
+            {revealMindset ? "HIDE ANSWER" : "REVEAL ANSWER"}
+          </button>
         </div>
       </div>
     </div>
@@ -722,7 +769,7 @@ const TechniqueSentenceStructure = () => {
       id: "short",
       label: "Short Sentence",
       example: "“Object there was none. Passion there was none.”",
-      effect: "Blunt. Shocking. Each brief, balanced statement lands like a punch. It creates dread and an artificial, chillingly cool distance.",
+      effect: "Each one lands like a full stop on a thought. Short. Blunt. Shocking. It creates dread because there's no escape from each statement.",
       tempo: "Slow, heavy, and mechanical thuds.",
       color: "border-[#ee4d6a] hover:bg-rose-950/25 text-[#ee4d6a]",
       glowColor: "rgba(238, 77, 106, 0.2)"
@@ -731,7 +778,7 @@ const TechniqueSentenceStructure = () => {
       id: "long",
       label: "Long Sentence",
       example: "“I think it was his eye! yes, it was this! One of his eyes resembled that of a vulture...”",
-      effect: "Rambling, breathless, and uncontrolled. Subverting punctuation to mirror a mind spiralling past logic and rational control.",
+      effect: "It goes on and on. That's not an accident. That rambling mirrors a mind that's spiralling. The sentence can't stop itself, just like the narrator can't.",
       tempo: "Erratic, overlapping waves.",
       color: "border-[#f1a92a] hover:bg-amber-950/25 text-[#f1a92a]",
       glowColor: "rgba(241, 169, 42, 0.2)"
@@ -740,7 +787,7 @@ const TechniqueSentenceStructure = () => {
       id: "fragment",
       label: "Fragment",
       example: "“Hearken!”",
-      effect: "A sudden, sharp, self-contained imperative command. It breaches the standard narrative membrane to drag the reader directly inside.",
+      effect: "That's one word. A command. It grabs you by the collar. It demands your attention.",
       tempo: "Sudden absolute pause.",
       color: "border-green-400 hover:bg-green-950/25 text-green-300",
       glowColor: "rgba(74, 222, 128, 0.2)"
@@ -804,6 +851,7 @@ const TechniqueSentenceStructure = () => {
 
 const DetectiveChallenge = () => {
   const [selectedQuote, setSelectedQuote] = useState<string | null>(null);
+  const [showPrompts, setShowPrompts] = useState(false);
 
   const highlights = [
     {
@@ -962,8 +1010,36 @@ const DetectiveChallenge = () => {
             </AnimatePresence>
           </div>
 
-          <div className="mt-8">
-            <SmartTimer minutes={5} />
+          <div className="mt-8 space-y-4">
+            <div className="flex items-center justify-between border-t border-white/5 pt-4">
+              <span className="text-xs text-slate-400 font-sans">Level-5 Teacher Assistant Mode</span>
+              <button
+                type="button"
+                onClick={() => setShowPrompts(!showPrompts)}
+                className="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded font-mono text-[10px] uppercase tracking-wider transition-colors cursor-pointer border border-white/10"
+              >
+                {showPrompts ? "Hide Teacher Script" : "Show Teacher Script"}
+              </button>
+            </div>
+
+            <AnimatePresence>
+              {showPrompts && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="bg-[#0f111a] border border-[#f1a92a]/30 p-4 rounded-sm space-y-3 text-xs overflow-hidden"
+                >
+                  <span className="font-mono text-[#f1a92a] font-bold block">INTAN'S STUCK PROMPTS (SAY):</span>
+                  <p className="text-slate-300">💡 <strong>If stuck on Repetition:</strong> "Look for any sentence where the same word or pattern comes back. Does anything feel like it's happening again?"</p>
+                  <p className="text-slate-300">💡 <strong>If stuck on Sentence Structure:</strong> "Look for the shortest sentence you can find on that paragraph. What does it feel like?"</p>
+                  <p className="text-[#f1a92a] font-semibold border-t border-white/5 pt-2">👥 After 3 mins, say (60s Share):</p>
+                  <p className="text-slate-300">"Okay, compare with your neighbour — did you find the same things?"</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <SmartTimer minutes={3} />
           </div>
         </div>
       </div>
@@ -975,9 +1051,9 @@ const PQCSlide = () => {
   const [activeStage, setActiveStage] = useState<'P' | 'Q' | 'C' | null>(null);
 
   const workedExample = {
-    point: 'Poe uses repetition in the parallel statements "Object there was none. Passion there was none."',
-    quote: '"none" is repeated twice, immediately and symmetrically back-to-back',
-    comment: 'The parallel structure creates a cold, robotic, rhythmic beat — as if the narrator is calmly listing logical reasons. This calculated tone makes the reader feel deeply uneasy, sensing a severe, quiet madness underneath the narrative mask.'
+    point: 'The writer utilizes parallel syntactic repetition (“Object there was none. Passion there was none.”)',
+    quote: 'where the noun structures and final negator “none” are repeated back-to-back with absolute symmetry',
+    comment: 'The parallel structure creates a cold, robotic rhythm — as if the narrator is listing reasons to justify the unjustifiable. This makes the reader feel deeply uneasy, sensing a dangerous calmness beneath the surface.'
   };
 
   return (
@@ -1007,7 +1083,7 @@ const PQCSlide = () => {
             <p className="text-xs text-slate-400 uppercase tracking-wider font-mono">Name the Technique</p>
           </div>
           <p className="text-xs text-slate-300 italic font-serif leading-relaxed mt-4">
-            e.g., "The writer utilizes parallel syntactic repetition..."
+            Identify and name the technique. e.g., "The writer utilizes parallel syntactic repetition..."
           </p>
         </div>
 
@@ -1027,7 +1103,7 @@ const PQCSlide = () => {
             <p className="text-xs text-slate-400 uppercase tracking-wider font-mono">Short, precise evidence</p>
           </div>
           <p className="text-xs text-slate-300 italic font-serif leading-relaxed mt-4">
-            e.g., "...in 'Object there was none. Passion there was none.'"
+            Isolate the exact quote. e.g., "...in 'Object there was none. Passion there was none.'"
           </p>
         </div>
 
@@ -1047,7 +1123,7 @@ const PQCSlide = () => {
             <p className="text-xs text-slate-400 uppercase tracking-wider font-mono">Explain the kinetic effect</p>
           </div>
           <p className="text-xs text-slate-300 italic font-serif leading-relaxed mt-4">
-            e.g., "This balanced statement lands with industrial bluntness..."
+            Explain the effect on the reader. Tell us: what kind of tension is built? What is felt, thought or understood? Never say "it creates tension" (too vague).
           </p>
         </div>
       </div>
