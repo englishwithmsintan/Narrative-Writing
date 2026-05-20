@@ -1,6 +1,6 @@
 {
-  "name": "The Art of Narrative Writing",
-  "description": "An interactive AS Level English lesson on crafting compelling stories and mastering narrative techniques.",
+  "name": "Narrative Writing & Text Analysis",
+  "description": "An interactive Cambridge AS Level English Language 9093 lesson analyzing Edgar Allan Poe's 'The Tell-Tale Heart'.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
